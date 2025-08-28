@@ -1,14 +1,14 @@
-
 import { GoogleGenAI } from "@google/genai";
 
 let ai: GoogleGenAI | null;
 let initializationError: Error | null = null;
 
 try {
-  // In a browser environment without a build step (like deploying to Google Sites),
-  // `process.env.API_KEY` will be undefined. This check provides a clear error.
-  if (typeof process === 'undefined' || typeof process.env === 'undefined' || !process.env.API_KEY) {
-    throw new Error("Configuration Error: API_KEY is not set. The application cannot connect to the AI service. Please ensure the hosting environment provides the API_KEY.");
+  // In a browser environment, `process` might be shimmed by a script in index.html.
+  const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
+
+  if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
+    throw new Error("Configuration Error: API_KEY is not set or is a placeholder. Please edit `index.html` and replace 'YOUR_API_KEY_HERE' with your actual Google Gemini API key.");
   }
   ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 } catch (e) {
